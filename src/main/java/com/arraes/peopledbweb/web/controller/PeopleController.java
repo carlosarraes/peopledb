@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -54,5 +55,15 @@ public class PeopleController {
       personRepository.deleteAllById(selections.get());
     }
     return "redirect:people";
+  }
+
+  @PostMapping(params = "edit=true")
+  public String editPeople(@RequestParam Optional<List<Long>> selections, Model model) {
+    System.out.println("selections = " + selections);
+    if (selections.isPresent()) {
+      Optional<Person> person = personRepository.findById(selections.get().get(0));
+      model.addAttribute("person", person);
+    }
+    return "people";
   }
 }
